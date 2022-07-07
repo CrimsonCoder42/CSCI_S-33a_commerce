@@ -1,3 +1,31 @@
-body {
-    padding: 10px;
+
+.navbar {
+    border-radius: 0;
+    margin-bottom: 50px;
+    }
+
+.jumbotron {
+    margin-bottom: 50px;
+}
+
+footer {
+    background-color: #f2f2f2;
+    padding: 25px;
+    }
+
+#jtron{
+    margin-bottom:0px;
+}
+
+.usernote {
+    color: white;
+    margin-top: 8%;
+    font-size: 12px;
+}
+
+.center{
+    width: 50%;
+    margin-right:25%;
+    margin-left:25%;
+
 }
