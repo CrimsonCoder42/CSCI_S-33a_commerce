@@ -9,8 +9,26 @@ from .forms import *
 from .models import User, Category, AuctionWatchList, AuctionListing, AuctionBid, Comment
 
 
+# modify index to get all active items.
 def index(request):
-    return render(request, "auctions/index.html")
+    # if not signed in display all items by itemActive only
+    auction_listing = AuctionListing.objects.filter(itemActive=True)
+    current_user = request.user
+    if not request.user.is_authenticated:
+        return render(request, "auctions/index.html", {
+            'auction_listing': auction_listing
+        })
+    else:
+        auctionwatchlist = AuctionWatchList.objects.get(user=current_user)
+        userbid = AuctionBid.objects.get(itemCreator=current_user)
+        created_items = AuctionListing.objects.get(itemCreator=current_user)
+
+        return render(request, "auctions/index.html", {
+            'auction_listing': auction_listing,
+            'auctionwatchlist': auctionwatchlist,
+            'userbid': userbid,
+            'created_items': created_items
+        })
 
 
 def login_view(request):
@@ -114,7 +132,9 @@ def create_newAuctionListing(request):
             )
             auc_listing.save()
 
-            return redirect('index')
+# route back to users current listing
+
+            return redirect('user_listing')
 
 # if not a POST generate a from to be filled out for new auction item
 

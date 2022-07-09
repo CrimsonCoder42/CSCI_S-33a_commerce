@@ -27,5 +27,11 @@ footer {
     width: 50%;
     margin-right:25%;
     margin-left:25%;
+}
 
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 10px;
+  row-gap: 1em;
 }

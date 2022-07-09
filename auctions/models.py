@@ -23,11 +23,12 @@ class AuctionWatchList(models.Model):
 # Use float instead of integer for bids down to the penny
 class AuctionListing(models.Model):
     itemTitle = models.CharField(max_length=80)
-    itemActive = models.BooleanField(default= True)
+    itemActive = models.BooleanField(default=True)
     itemImage = models.ImageField(upload_to='images', blank=True,  null=True)
     itemDescription = models.TextField()
     itemCreator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='auction_maker')
-    auctionCategory = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='auction_category')
+    # related_name = 'auction_category'
+    auctionCategory = models.ForeignKey(Category, on_delete=models.CASCADE)
     date = models.DateTimeField(default=timezone.now)
     initial_bid = models.FloatField()
     current_bid = models.FloatField(blank=True, null=True)
