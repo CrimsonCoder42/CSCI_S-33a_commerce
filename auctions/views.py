@@ -3,7 +3,9 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django import forms
 
+from .forms import *
 from .models import User, Category, AuctionWatchList, AuctionListing, AuctionBid, Comment
 
 
@@ -61,3 +63,66 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+# use .is_authenticated to validate if user is signed in and
+# registered https://docs.djangoproject.com/en/4.0/topics/auth/default/
+def user_listing(request, user):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        # use .objects .filter() and .get() for user name and
+        # to extract Auctionand wacthlist https://docs.djangoproject.com/en/4.0/ref/models/querysets/
+        user_name = User.objects.get(username=user)
+        user_watchlist = AuctionListing.objects.filter(user=user_name)
+        auction_items = AuctionListing.objects.filter(user=user_name)
+
+        return render(request, "auctions/user_listings", {
+            "user_watchlist": user_watchlist,
+            "auction_items": auction_items
+        })
+
+
+# creating a new auction item
+def create_newAuctionListing(request):
+# if user is authenticated continue if not go to log in
+
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+
+# if it's a POST take in the data information and redirect
+
+    if request.method == "POST":
+        new_form = newAuctionListing(request.POST, request.FILES)
+
+        if new_form.is_valid():
+
+            # clean and normalize the data for consistant format
+            itemTitle = new_form.cleaned_data['itemTitle']
+            image = new_form.cleaned_data['image']
+            itemDescription = new_form.cleaned_data['itemDescription']
+            initial_bid = new_form.cleaned_data['initial_bid']
+            auctionCategory = new_form.cleaned_data['auctionCategory']
+
+# using .save with the model https://docs.djangoproject.com/en/4.0/ref/models/instances/
+
+            auc_listing = AuctionListing(
+                itemTitle=itemTitle,
+                image=image,
+                itemDescription=itemDescription,
+                initial_bid=initial_bid,
+                auctionCategory=auctionCategory
+            )
+            auc_listing.save()
+
+            return redirect('index')
+
+# if not a POST generate a from to be filled out for new auction item
+
+    else:
+        return render(request, "auctions.create_listing.html", {
+            'form': newAuctionListing()
+        })
+
+
+
+

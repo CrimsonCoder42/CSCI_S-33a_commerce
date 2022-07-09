@@ -24,9 +24,9 @@ class AuctionWatchList(models.Model):
 class AuctionListing(models.Model):
     itemTitle = models.CharField(max_length=80)
     itemActive = models.BooleanField(default= True)
-    # itemImage = models.ImageField(upload_to='images', blank=True,  null=True)
+    itemImage = models.ImageField(upload_to='images', blank=True,  null=True)
     itemDescription = models.TextField()
-    itemCreator = models.ForeignKey(User, on_delete=models.PROTECT, related_name='auction_maker')
+    itemCreator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='auction_maker')
     auctionCategory = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='auction_category')
     date = models.DateTimeField(default=timezone.now)
     initial_bid = models.FloatField()
